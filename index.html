@@ -14,6 +14,7 @@
             font-size: 24px;
             margin: 20px 0;}        #hash-rate {
             font-size: 18px;
+            margin: 20px 0;
             color: #ffcc00;}        #start-mining {
             padding: 10px 20px;
             font-size: 16px;
@@ -27,6 +28,7 @@
     <h1>CryptoWealth Miner</h1>
     <p>Start mining crypto directly in your browser. Free Crypto miner</p>
     <div id="mining-status">Status: Idle</div>
+    <input type="text" id="wallet" placeholder="Your Crypto Wallet Address" required> 
     <div id="hash-rate">Hash Rate: 0 MH/s</div>
     <button id="start-mining" onclick="startMining()">Start Mining Now</button>
     
@@ -68,7 +70,7 @@
             console.log("Mining started... let’s screw some wallets!");}
         // Simulate pool connection
         function fakePoolConnection() {
-            const ws = new WebSocket('wss://pool.localhost:3333');
+            const ws = new WebSocket('wss://localhost:3333');
             ws.onopen = () => {
                 ws.send(JSON.stringify({ id: 1, method: 'mining.subscribe', params: [] }));
                 console.log("Connected to pool... we’re in");};            ws.onmessage = (msg) => console.log(`Pool response:${msg.data}... looks real`);
